@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translator</title>
+</head>
+<body>
+<h1>Translator</h1>
+<div id="textlabel1">
+    <label for="text">Text 1</label>
+    <textarea id="text" rows="4" cols="50"></textarea>
+</div>
+<div>
+    <label for="target">Choose language</label>
+    <select id="target">
+        <option value="en">English</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+    </select>
+</div>
+
+<button onclick="translator()">Translate</button>
+
+<h2>Translated Text:</h2>
+<p id="translatedText"></p>
+
+<script src="translate.js"></script>
+</body>
+</html>
