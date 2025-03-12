@@ -17,9 +17,9 @@ app.get('/', (req, res) => {
 const API_URL = 'https://api.mymemory.translated.net/get';
 
 app.post('/translate', async (req, res) => {
-    const { text, target } = req.body;
+    const { text, lang, target } = req.body;
 
-    const langpair = `auto|${target}`;
+    const langpair = `${lang}|${target}`;
 
     try {
         const response = await axios.get(API_URL, {

@@ -1,6 +1,7 @@
 async function translator() {
     const text = document.getElementById('text').value;
     const target = document.getElementById('target').value;
+    const lang = document.getElementById('lang').value;
 
     if (!text) {
         alert('Please enter text to translate');
@@ -13,7 +14,7 @@ async function translator() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ text, target })
+            body: JSON.stringify({ text, lang, target })
         });
 
         const data = await response.json();
