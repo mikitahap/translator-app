@@ -1,15 +1,11 @@
-# Ignore node_modules directory
+# Ignore dependencies
 node_modules/
 
-# Ignore environment files (for sensitive data like API keys)
+# Ignore environment files
 .env
 
-# Ignore WebStorm configuration folder
+# Ignore WebStorm project settings folder
 .idea/
-
-# Ignore system files created by macOS
-.DS_Store
 
 # Ignore log files
 *.log
-
