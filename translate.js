@@ -1,11 +1,13 @@
+let timeoutId;
+
 async function translator() {
     const text = document.getElementById('text').value;
     const target = document.getElementById('target').value;
     const lang = document.getElementById('lang').value;
 
     if (!text) {
-        alert('Please enter text to translate');
-        return;
+        document.getElementById('translatedText').innerText = "";
+        return 0;
     }
 
     try {
@@ -29,3 +31,12 @@ async function translator() {
         alert('Something went wrong');
     }
 }
+
+function debounce(func, delay) {
+    return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+document.getElementById('text').addEventListener('input', translator);
