@@ -63,12 +63,21 @@ textarea {
     margin-top: 10px;
 }
 
+/* Стили для выпадающего списка с несколькими колонками */
 select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
+    column-count: 3; /* Разделяем на 3 колонки */
+    column-gap: 20px; /* Отступ между колонками */
+}
+
+/* Для лучшего отображения в некоторых браузерах */
+select option {
+    padding: 5px;
+    break-inside: avoid; /* Предотвращаем разрыв элементов между колонками */
 }
 
 .left-select {
