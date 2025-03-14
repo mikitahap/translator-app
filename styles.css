@@ -19,7 +19,6 @@ body {
     text-align: center;
 }
 
-
 h1 {
     color: #333;
     margin-bottom: 20px;
@@ -28,29 +27,40 @@ h1 {
 .columns {
     display: flex;
     gap: 100px;
+    height: 100%;
 }
 
-.left-column {
+.left-column, .right-column {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.right-column {
-    flex: 1;
+.language-select-container {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.textarea-container {
+    position: relative;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    flex-grow: 1;
 }
 
 textarea {
     width: 95%;
+    height: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
     resize: none;
+    flex-grow: 1;
+    margin-top: 10px;
 }
 
 select {
@@ -61,26 +71,34 @@ select {
     font-size: 16px;
 }
 
+.left-select {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
 label {
     margin-bottom: 5px;
     display: block;
+    font-weight: bold;
 }
 
-
 button {
-    background-color: #007bff;
+    width: 10%;
+    background-color: #dc3545;
     color: white;
-    padding: 10px 20px;
-    margin-top: 20px;
+    padding: 5px 10px;
     border: none;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #c82333;
 }
 
 .translated-text {
@@ -92,4 +110,5 @@ button:hover {
     font-size: 18px;
     color: #333;
     overflow-y: auto;
+    margin-top: 10px;
 }

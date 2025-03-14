@@ -1,5 +1,10 @@
 let timeoutId;
 
+function clearText() {
+    document.getElementById('text').value = "";
+    document.getElementById('translatedText').innerText = "Translated text";
+}
+
 async function translator() {
     const text = document.getElementById('text').value;
     const target = document.getElementById('target').value;
@@ -34,8 +39,8 @@ async function translator() {
 function debounce(func, delay) {
     return function(...args) {
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => func.apply(this, args), 300);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
     };
 }
 
-document.getElementById('text').addEventListener('input', translator);
+document.getElementById('text').addEventListener('input', debounce(translator, 25));

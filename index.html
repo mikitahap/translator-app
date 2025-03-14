@@ -10,21 +10,24 @@
 <div class="container">
     <h1>Translator</h1>
 
-
-
     <div class="columns">
         <div class="left-column">
             <div>
                 <label for="lang">Source Language:</label>
-                <select id="lang">
-                    <option value="EN">English</option>
-                    <option value="ES">Spanish</option>
-                    <option value="FR">French</option>
-                    <option value="DE">German</option>
-                </select>
+                <div class="language-select-container">
+                    <select class="left-select" id="lang">
+                        <option value="EN">English</option>
+                        <option value="ES">Spanish</option>
+                        <option value="FR">French</option>
+                        <option value="DE">German</option>
+                    </select>
+                    <button onclick="clearText()">❌</button>
+                </div>
             </div>
 
-            <textarea id="text" rows="10" placeholder="Enter text here..." style="resize: none"></textarea>
+            <div class="textarea-container">
+                <textarea id="text" rows="10" placeholder="Enter text here..." style="resize: none"></textarea>
+            </div>
         </div>
 
         <div class="right-column">
@@ -40,7 +43,6 @@
             <div id="translatedText" class="translated-text">Translated text</div>
         </div>
     </div>
-
 </div>
 
 <script src="translate.js"></script>
