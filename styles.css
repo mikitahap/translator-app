@@ -87,7 +87,7 @@ label {
 
 button {
     width: 10%;
-    background-color: #dc3545;
+    background-color: #92d4ff;
     color: white;
     padding: 5px 10px;
     border: none;
@@ -98,7 +98,7 @@ button {
 }
 
 button:hover {
-    background-color: #c82333;
+    background-color: #6a9be4;
 }
 
 .translated-text {
