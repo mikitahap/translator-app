@@ -3,7 +3,6 @@ let timeoutId;
 async function translator() {
     const text = document.getElementById('text').value;
     const target = document.getElementById('target').value;
-    const lang = document.getElementById('lang').value;
 
     if (!text) {
         document.getElementById('translatedText').innerText = "";
@@ -16,7 +15,7 @@ async function translator() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ text, lang, target })
+            body: JSON.stringify({ text, target })
         });
 
         const data = await response.json();
@@ -35,7 +34,7 @@ async function translator() {
 function debounce(func, delay) {
     return function(...args) {
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => func.apply(this, args), delay);
+        timeoutId = setTimeout(() => func.apply(this, args), 300);
     };
 }
 
