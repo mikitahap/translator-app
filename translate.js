@@ -1,8 +1,18 @@
 let timeoutId;
 
 function clearText() {
+    const text = document.getElementById('text').value;
+    const translatedText = document.getElementById('translatedText').innerText;
+
+    if (text && translatedText && translatedText !== "Translated text") {
+        saveToHistory(text, translatedText, document.getElementById('target').value);
+    }
+
+
     document.getElementById('text').value = "";
     document.getElementById('translatedText').innerText = "Translated text";
+
+    loadHistory();
 }
 
 async function translator() {
@@ -36,6 +46,7 @@ async function translator() {
     }
 }
 
+
 function debounce(func, delay) {
     return function(...args) {
         clearTimeout(timeoutId);
@@ -43,4 +54,37 @@ function debounce(func, delay) {
     };
 }
 
+function saveToHistory(sourceText, translatedText, targetLang) {
+    const history = JSON.parse(sessionStorage.getItem('translationHistory')) || [];
+    history.push({
+        sourceText,
+        translatedText,
+        targetLang,
+        timestamp: new Date().toLocaleString() // Добавляем время перевода
+    });
+    sessionStorage.setItem('translationHistory', JSON.stringify(history));
+}
+
+function loadHistory() {
+    const history = JSON.parse(sessionStorage.getItem('translationHistory')) || [];
+    const historyList = document.getElementById('historyList');
+    historyList.innerHTML = history.map(item => `
+        <li>
+            <strong>${item.sourceText}</strong> → ${item.translatedText} (${item.targetLang}, ${item.timestamp})
+        </li>
+    `).join('');
+}
+
+function clearHistory() {
+    sessionStorage.removeItem('translationHistory');
+    loadHistory();
+}
+
+
+window.onload = loadHistory;
+
+
 document.getElementById('text').addEventListener('input', debounce(translator, 25));
+
+
+document.getElementById('clearButton').addEventListener('click', clearText);
