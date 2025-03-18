@@ -35,7 +35,7 @@ async function translator() {
 
         const data = await response.json();
 
-        if (response.ok && data.translatedText) {
+        if (response.ok && data.translatedText && document.getElementById('text').value != '') {
             lastValidTranslation = data.translatedText;
             document.getElementById('text').dataset.lastText = text;
             document.getElementById('translatedText').innerText = lastValidTranslation;
@@ -46,7 +46,6 @@ async function translator() {
     }
 }
 
-// Функция debounce
 function debounce(func, delay) {
     return function (...args) {
         clearTimeout(timeoutId);
@@ -88,9 +87,9 @@ document.getElementById('text').addEventListener('input', function (event) {
     setTimeout(() => {
         if (!event.target.value.trim() && lastValidTranslation) {
             saveToHistory(document.getElementById('text').dataset.lastText, lastValidTranslation, document.getElementById('target').value, true);
-            lastValidTranslation = ""; // Сбрасываем перевод после сохранения
-            document.getElementById('translatedText').innerText = "Translated text";
+            lastValidTranslation = "";
             loadHistory();
+            document.getElementById('translatedText').innerText = "Translated text";
         }
     }, 0);
 });
