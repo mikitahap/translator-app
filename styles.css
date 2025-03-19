@@ -6,7 +6,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding-top: 60px;
 }
 
 .container {
@@ -17,16 +18,12 @@ body {
     width: 90%;
     max-width: 900px;
     text-align: center;
-}
-
-h1 {
-    color: #333;
-    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .columns {
     display: flex;
-    gap: 100px;
+    gap: 20px;
     height: 100%;
 }
 
@@ -63,21 +60,12 @@ textarea {
     margin-top: 10px;
 }
 
-/* Стили для выпадающего списка с несколькими колонками */
 select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
-    column-count: 3; /* Разделяем на 3 колонки */
-    column-gap: 20px; /* Отступ между колонками */
-}
-
-/* Для лучшего отображения в некоторых браузерах */
-select option {
-    padding: 5px;
-    break-inside: avoid; /* Предотвращаем разрыв элементов между колонками */
 }
 
 .left-select {
@@ -97,7 +85,7 @@ label {
 button {
     width: 10%;
     background-color: #92d4ff;
-    color: white;
+    color: #000000;
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
@@ -120,4 +108,56 @@ button:hover {
     color: #333;
     overflow-y: auto;
     margin-top: 10px;
+}
+
+.top-bar {
+    width: 100%;
+    background-color: #79aea7;
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: 50px;
+}
+
+.top-bar-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.profile-icon {
+    margin-right: 40px;
+    font-size: 30px;
+    color: white;
+    text-decoration: none;
+}
+
+.profile-icon i {
+    font-size: inherit;
+}
+
+/* История переводов */
+#history {
+    margin-top: 20px;
+}
+
+#history h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+#historyList {
+    list-style-type: none;
+    padding: 0;
+}
+
+#historyList li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
 }
