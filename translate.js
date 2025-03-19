@@ -1,5 +1,6 @@
 let timeoutId;
 let lastValidTranslation = "";
+let isClearing = false;
 
 function clearText() {
     const text = document.getElementById('text').value;
@@ -13,6 +14,7 @@ function clearText() {
     document.getElementById('translatedText').innerText = "Translated text";
 
     loadHistory();
+    isClearing = true;
 }
 
 async function translator() {
@@ -20,7 +22,6 @@ async function translator() {
     const target = document.getElementById('target').value;
 
     if (!text) {
-
         return;
     }
 
@@ -35,7 +36,7 @@ async function translator() {
 
         const data = await response.json();
 
-        if (response.ok && data.translatedText && document.getElementById('text').value != '') {
+        if (response.ok && data.translatedText && document.getElementById('text').value !== '') {
             lastValidTranslation = data.translatedText;
             document.getElementById('text').dataset.lastText = text;
             document.getElementById('translatedText').innerText = lastValidTranslation;
@@ -58,13 +59,10 @@ function saveToHistory(sourceText, translatedText, targetLang, visible) {
     history.push({
         sourceText,
         translatedText,
-        targetLang,
         visibility: visible,
-        timestamp: new Date().toLocaleString()
     });
     sessionStorage.setItem('translationHistory', JSON.stringify(history));
 }
-
 
 function loadHistory() {
     const history = JSON.parse(sessionStorage.getItem('translationHistory')) || [];
@@ -73,7 +71,7 @@ function loadHistory() {
         .filter(item => item.visibility)
         .map(item => `
             <li>
-                <strong>${item.sourceText}</strong> → ${item.translatedText} (${item.targetLang}, ${item.timestamp})
+                <strong>${item.sourceText}</strong> → ${item.translatedText}
             </li>
         `).join('');
 }
@@ -84,14 +82,50 @@ function clearHistory() {
 }
 
 document.getElementById('text').addEventListener('input', function (event) {
-    setTimeout(() => {
-        if (!event.target.value.trim() && lastValidTranslation) {
-            saveToHistory(document.getElementById('text').dataset.lastText, lastValidTranslation, document.getElementById('target').value, true);
-            lastValidTranslation = "";
-            loadHistory();
-            document.getElementById('translatedText').innerText = "Translated text";
-        }
-    }, 0);
+    const textarea = event.target;
+
+    if (textarea.value === "" && isClearing) {
+        saveToHistory(document.getElementById('text').dataset.lastText, lastValidTranslation, document.getElementById('target').value, true);
+        lastValidTranslation = "";
+        loadHistory();
+        document.getElementById('translatedText').innerText = "Translated text";
+    }
+    else if (textarea.value === ""){
+        document.getElementById('translatedText').innerText = "Translated text";
+    }
+
+    isClearing = false;
+});
+
+document.getElementById('text').addEventListener('keydown', function (event) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'a') {
+        setTimeout(() => {
+            if (document.getElementById('text').selectionStart === 0 && document.getElementById('text').selectionEnd === document.getElementById('text').value.length) {
+                isClearing = true;
+            }
+        }, 0);
+    }
+    if (event.key === 'Delete' && document.getElementById('text').selectionStart === 0 && document.getElementById('text').selectionEnd === document.getElementById('text').value.length) {
+        isClearing = true;
+    }
+});
+
+document.getElementById('text').addEventListener('mouseup', function () {
+    const textarea = document.getElementById('text');
+    const selectionStart = textarea.selectionStart;
+    const selectionEnd = textarea.selectionEnd;
+    if (selectionStart === 0 && selectionEnd === textarea.value.length) {
+        isClearing = true;
+    }
+});
+
+document.getElementById('text').addEventListener('select', function () {
+    const textarea = document.getElementById('text');
+    const selectionStart = textarea.selectionStart;
+    const selectionEnd = textarea.selectionEnd;
+    if (selectionStart === 0 && selectionEnd === textarea.value.length) {
+        isClearing = true;
+    }
 });
 
 window.onload = loadHistory;
