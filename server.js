@@ -3,6 +3,8 @@ const path = require('path');
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const db = require('./database');
 
 const app = express();
 app.use(express.json());
@@ -15,6 +17,50 @@ app.get('/', (req, res) => {
 });
 
 const API_URL = 'https://api-free.deepl.com/v2/translate';
+
+app.post('/register', (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required' });
+    }
+
+    db.get("SELECT * FROM users WHERE username = ?", [username], (err, row) => {
+        if (row) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+
+        const hashedPassword = bcrypt.hashSync(password, 10);
+
+        db.run("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashedPassword], function(err) {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
+            }
+            res.status(201).json({ message: 'User registered successfully' });
+        });
+    });
+});
+
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required' });
+    }
+
+    db.get("SELECT * FROM users WHERE username = ?", [username], (err, row) => {
+        if (!row) {
+            return res.status(400).json({ error: 'Invalid username or password' });
+        }
+
+        const isPasswordValid = bcrypt.compareSync(password, row.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ error: 'Invalid username or password' });
+        }
+
+        res.status(200).json({ message: 'Login successful' });
+    });
+});
 
 app.post('/translate', async (req, res) => {
     const { text, target } = req.body;

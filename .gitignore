@@ -9,3 +9,7 @@ node_modules/
 
 # Ignore log files
 *.log
+
+# Ignore database files
+*.sqlite
+*.db
