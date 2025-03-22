@@ -32,4 +32,4 @@ This project is still under active development. Current features include:
 This project is under active development, and features may change or improve over time.
 Your feedback and suggestions are welcome! Feel free to open issues on GitHub.
 ## 📝 License
-This project is licensed under the GNU License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
