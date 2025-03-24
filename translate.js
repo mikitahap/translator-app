@@ -2,6 +2,10 @@ let timeoutId;
 let lastValidTranslation = "";
 let isClearing = false;
 
+function isAuthenticated() {
+    return !!sessionStorage.getItem('authToken');
+}
+
 function clearText() {
     const text = document.getElementById('text').value;
     const translatedText = document.getElementById('translatedText').innerText;

@@ -5,11 +5,12 @@ const axios = require('axios');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const db = require('./database');
-
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = process.env.SECRET_KEY || 'your-strong-secret-key-here';
 const app = express();
+
 app.use(express.json());
 app.use(cors());
-
 app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
@@ -25,6 +26,10 @@ app.post('/register', (req, res) => {
         return res.status(400).json({ error: 'Username and password are required' });
     }
 
+    if (password.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+
     db.get("SELECT * FROM users WHERE username = ?", [username], (err, row) => {
         if (row) {
             return res.status(400).json({ error: 'Username already exists' });
@@ -32,15 +37,24 @@ app.post('/register', (req, res) => {
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
-        db.run("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashedPassword], function(err) {
-            if (err) {
-                return res.status(500).json({ error: 'Database error' });
+        db.run("INSERT INTO users (username, password) VALUES (?, ?)",
+            [username, hashedPassword],
+            function(err) {
+                if (err) {
+                    return res.status(500).json({ error: 'Database error' });
+                }
+
+                const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: '1h' });
+
+                res.status(201).json({
+                    message: 'User registered successfully',
+                    token,
+                    username
+                });
             }
-            res.status(201).json({ message: 'User registered successfully' });
-        });
+        );
     });
 });
-
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -58,10 +72,15 @@ app.post('/login', (req, res) => {
             return res.status(400).json({ error: 'Invalid username or password' });
         }
 
-        res.status(200).json({ message: 'Login successful' });
+        const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: '1h' });
+
+        res.status(200).json({
+            message: 'Login successful',
+            token,
+            username
+        });
     });
 });
-
 app.post('/translate', async (req, res) => {
     const { text, target } = req.body;
 

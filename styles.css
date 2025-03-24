@@ -83,7 +83,6 @@ label {
 }
 
 button {
-    width: 10%;
     background-color: #92d4ff;
     color: #000000;
     padding: 5px 10px;
@@ -92,6 +91,7 @@ button {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    white-space: nowrap;
 }
 
 button:hover {
@@ -116,33 +116,101 @@ button:hover {
     color: white;
     padding: 10px 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
     height: 50px;
+    box-sizing: border-box;
 }
 
 .top-bar-title {
     font-size: 20px;
     font-weight: bold;
     margin: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.profile-section {
+    position: absolute;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: normal;
+    color: white;
+}
+
+#auth-buttons {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #79aea7;
+    padding: 10px;
+    border-radius: 5px;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 1001;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+#auth-buttons button {
+    width: 100%;
+    margin: 0;
+    background-color: #6a9be4;
+    color: white;
+}
+
+#user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logout-btn {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-btn:hover {
+    background-color: #e05555;
 }
 
 .profile-icon {
-    margin-right: 40px;
     font-size: 30px;
     color: white;
     text-decoration: none;
+    display: flex;
+    align-items: center;
 }
 
 .profile-icon i {
     font-size: inherit;
 }
 
-/* История переводов */
+.logout-btn {
+    width: auto;
+    padding: 5px 10px;
+    background-color: #ff6b6b;
+    color: white;
+}
+
 #history {
     margin-top: 20px;
 }
@@ -160,4 +228,285 @@ button:hover {
 #historyList li {
     padding: 5px 0;
     border-bottom: 1px solid #ccc;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.modal-content button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #79aea7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: #6a9be4;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.settings-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 80px auto 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.settings-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+}
+
+.settings-card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settings-card h2 i {
+    font-size: 1.2em;
+}
+
+.setting-group {
+    margin-bottom: 20px;
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.settings-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+}
+
+.edit-btn, .save-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.edit-btn {
+    background-color: #92d4ff;
+    color: #000;
+}
+
+.save-btn {
+    background-color: #79aea7;
+    color: white;
+}
+
+.switch-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 10px;
+}
+
+.switch-input {
+    position: absolute;
+    opacity: 0;
+}
+
+.switch-slider {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    background-color: #ccc;
+    border-radius: 24px;
+    transition: .4s;
+}
+
+.switch-slider:before {
+    content: "";
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+
+.switch-input:checked + .switch-slider {
+    background-color: #79aea7;
+}
+
+.switch-input:checked + .switch-slider:before {
+    transform: translateX(26px);
+}
+
+.danger-zone {
+    border: 2px solid #ff6b6b;
+}
+
+.danger-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.3s;
+}
+
+.danger-btn:hover {
+    background-color: #e05555;
+}
+
+.settings-modal {
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.confirm-btn {
+    flex: 1;
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.cancel-btn {
+    flex: 1;
+    background-color: #ccc;
+    color: #333;
+}
+
+.profile-icon {
+    font-size: 30px;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s;
+}
+
+.profile-icon:hover {
+    transform: scale(1.1);
+    color: #e0e0e0;
+}
+
+.profile-icon i {
+    font-size: inherit;
+}
+
+.back-button {
+    position: absolute;
+    left: 15px;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    z-index: 1;
+}
+
+.back-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+.back-button i {
+    font-size: 14px;
+}
+
+
+.top-bar-title {
+    margin: 0 auto;
+    flex-grow: 1;
+    text-align: center;
+    padding: 0 40px;
 }
