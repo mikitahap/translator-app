@@ -15,9 +15,9 @@
             <span id="username-display" class="user-name"></span>
             <button onclick="logout()" class="logout-btn">Logout</button>
         </div>
-        <a href="user.html" class="profile-icon">
+        <div class="profile-icon" id="profile-icon">
             <i class="fas fa-user-circle"></i>
-        </a>
+        </div>
         <div id="auth-buttons" style="display:none;">
             <button onclick="showAuthModal('login')">Login</button>
             <button onclick="showAuthModal('register')">Register</button>
@@ -148,5 +148,11 @@
 </div>
 <script src="translate.js"></script>
 <script src="auth.js"></script>
+<div id="toast" class="toast">
+    <div class="toast-content">
+        <i id="toast-icon" class="fas"></i>
+        <span id="toast-message"></span>
+    </div>
+</div>
 </body>
 </html>

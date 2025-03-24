@@ -1,22 +1,70 @@
 let currentAuthType = 'login';
+let authMenuVisible = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    initAuthSystem();
+});
+
+function initAuthSystem() {
+    setupEventListeners();
+    updateAuthUI();
+
+    if (new URLSearchParams(window.location.search).has('logout')) {
+        window.history.replaceState({}, '', 'index.html');
+        toggleAuthMenu(false);
+    }
+}
+
+function setupEventListeners() {
+    document.getElementById('auth-form')?.addEventListener('submit', handleAuth);
+
+    document.getElementById('profile-icon')?.addEventListener('click', handleProfileClick);
+
+    document.getElementById('auth-modal')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('auth-modal')) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        const authButtons = document.getElementById('auth-buttons');
+        const profileIcon = document.getElementById('profile-icon');
+
+        if (authMenuVisible &&
+            authButtons &&
+            !authButtons.contains(e.target) &&
+            !profileIcon.contains(e.target)) {
+            toggleAuthMenu(false);
+        }
+    });
+}
+
+function handleProfileClick(e) {
+    if (isAuthenticated()) {
+        window.location.href = 'user.html';
+    } else {
+        toggleAuthMenu();
+        e.stopPropagation();
+    }
+}
 
 function showAuthModal(type) {
     currentAuthType = type;
     const modal = document.getElementById('auth-modal');
-    const title = document.getElementById('modal-title');
-    const submitBtn = document.getElementById('auth-submit');
-    const switchLink = document.getElementById('auth-switch');
 
-    title.textContent = type === 'login' ? 'Login' : 'Register';
-    submitBtn.textContent = type === 'login' ? 'Login' : 'Register';
-    switchLink.innerHTML = type === 'login'
-        ? 'Don\'t have an account? <a href="#" onclick="switchAuthType()">Register</a>'
-        : 'Already have an account? <a href="#" onclick="switchAuthType()">Login</a>';
+    document.getElementById('modal-title').textContent = type === 'login' ? 'Login' : 'Register';
+    document.getElementById('auth-submit').textContent = type === 'login' ? 'Login' : 'Register';
+    document.getElementById('auth-switch').innerHTML = type === 'login'
+        ? 'Don\'t have an account? <a href="#" onclick="switchAuthType(event)">Register</a>'
+        : 'Already have an account? <a href="#" onclick="switchAuthType(event)">Login</a>';
 
+    document.getElementById('auth-error').textContent = '';
     modal.style.display = 'block';
+    toggleAuthMenu(false);
 }
 
-function switchAuthType() {
+function switchAuthType(e) {
+    e.preventDefault();
     showAuthModal(currentAuthType === 'login' ? 'register' : 'login');
 }
 
@@ -26,116 +74,131 @@ function closeModal() {
 
 async function handleAuth(e) {
     e.preventDefault();
-    const username = document.getElementById('auth-username').value;
+    const username = document.getElementById('auth-username').value.trim();
     const password = document.getElementById('auth-password').value;
 
     if (!username || !password) {
-        document.getElementById('auth-error').textContent = 'Please fill all fields';
+        showError('Please fill all fields');
         return;
     }
 
     try {
-        let response;
-        if (currentAuthType === 'login') {
-            response = {
-                ok: true,
-                json: async () => ({
-                    token: 'mock-token',
-                    username: username
-                })
-            };
-        } else {
-            response = {
-                ok: true,
-                json: async () => ({
-                    token: 'mock-token',
-                    username: username
-                })
-            };
-        }
+        const response = {
+            ok: true,
+            json: async () => ({
+                token: 'mock-token-' + Date.now(),
+                username: username
+            })
+        };
 
         const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.error || 'Authentication failed');
-        }
+        if (!response.ok) throw new Error(data.error || 'Authentication failed');
 
         sessionStorage.setItem('authToken', data.token);
         sessionStorage.setItem('username', data.username);
-
-        console.log('Stored username:', data.username);
 
         updateAuthUI();
         closeModal();
 
         if (currentAuthType === 'register') {
-            alert('Registration successful! You are now logged in.');
+            showToast('Registration successful! You are now logged in.');
+        }
+        else{
+            showToast('Authentication successful! You are now logged in.');
         }
     } catch (error) {
-        document.getElementById('auth-error').textContent = error.message;
-        console.error('Auth error:', error);
+        showError(error.message || 'Authentication failed');
     }
 }
 
-function toggleAuthButtons() {
-    const authButtons = document.getElementById('auth-buttons');
+function updateAuthUI() {
+    const isLoggedIn = isAuthenticated();
+    const username = sessionStorage.getItem('username') || '';
+
     const userProfile = document.getElementById('user-profile');
+    const authButtons = document.getElementById('auth-buttons');
 
-    if (userProfile.style.display === 'flex') return;
+    if (userProfile) {
+        userProfile.style.display = isLoggedIn ? 'flex' : 'none';
+        document.getElementById('username-display').textContent = username;
+    }
 
-    authButtons.style.display = authButtons.style.display === 'none' ? 'flex' : 'none';
-
-    authButtons.style.position = 'absolute';
-    authButtons.style.top = '60px';
-    authButtons.style.right = '20px';
-    authButtons.style.flexDirection = 'column';
-    authButtons.style.gap = '5px';
-    authButtons.style.backgroundColor = '#79aea7';
-    authButtons.style.padding = '10px';
-    authButtons.style.borderRadius = '5px';
-    authButtons.style.zIndex = '1001';
+    if (authButtons) {
+        authButtons.style.display = 'none';
+        authMenuVisible = false;
+    }
 }
 
-function updateAuthUI() {
-    const username = sessionStorage.getItem('username');
-    console.log('Retrieved username:', username);
-
-    const userProfile = document.getElementById('user-profile');
-    const usernameDisplay = document.getElementById('username-display');
+function toggleAuthMenu(show = !authMenuVisible) {
     const authButtons = document.getElementById('auth-buttons');
+    if (authButtons) {
+        authButtons.style.display = show ? 'flex' : 'none';
+        authMenuVisible = show;
+        positionAuthButtons();
+    }
+}
 
-    if (username && username !== 'undefined') {
-        if (userProfile) userProfile.style.display = 'flex';
-        if (usernameDisplay) usernameDisplay.textContent = username;
-        if (authButtons) authButtons.style.display = 'none';
-    } else {
-        if (userProfile) userProfile.style.display = 'none';
-        if (authButtons) authButtons.style.display = 'none';
+function positionAuthButtons() {
+    const authButtons = document.getElementById('auth-buttons');
+    if (authButtons) {
+        authButtons.style.position = 'absolute';
+        authButtons.style.top = '60px';
+        authButtons.style.right = '20px';
+        authButtons.style.flexDirection = 'column';
+        authButtons.style.gap = '5px';
+        authButtons.style.backgroundColor = '#79aea7';
+        authButtons.style.padding = '10px';
+        authButtons.style.borderRadius = '5px';
+        authButtons.style.zIndex = '1001';
     }
 }
 
 function logout() {
-    sessionStorage.clear();
-    updateAuthUI();
-    window.location.reload();
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('username');
+    window.location.href = 'index.html?logout=true';
 }
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('auth-form').addEventListener('submit', handleAuth);
-    updateAuthUI();
 
-    document.addEventListener('click', (e) => {
-        const authButtons = document.getElementById('auth-buttons');
-        const profileIcon = document.querySelector('.profile-icon');
+function isAuthenticated() {
+    return !!sessionStorage.getItem('authToken');
+}
 
-        if (authButtons && authButtons.style.display !== 'none' &&
-            !authButtons.contains(e.target) &&
-            !profileIcon.contains(e.target)) {
-            authButtons.style.display = 'none';
+function showError(message) {
+    const errorElement = document.getElementById('auth-error');
+    if (errorElement) {
+        errorElement.textContent = message;
+        setTimeout(() => errorElement.textContent = '', 3000);
+    }
+}
+
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const toastIcon = document.getElementById('toast-icon');
+    const toastMessage = document.getElementById('toast-message');
+
+    if (!toast || !toastMessage) return;
+
+    toastMessage.textContent = message;
+
+    if (toastIcon) {
+        switch(type) {
+            case 'success':
+                toastIcon.className = 'fas fa-check-circle';
+                break;
+            case 'error':
+                toastIcon.className = 'fas fa-times-circle';
+                break;
+            case 'warning':
+                toastIcon.className = 'fas fa-exclamation-triangle';
+                break;
+            default:
+                toastIcon.className = 'fas fa-info-circle';
         }
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('auth-form').addEventListener('submit', handleAuth);
-    updateAuthUI();
-});
+    }
+    toast.className = 'toast';
+    toast.classList.add(type, 'show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
