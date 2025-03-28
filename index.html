@@ -16,6 +16,9 @@
             if (settings.darkMode) {
                 document.body.classList.add('dark-mode');
             }
+            if (settings.language) {
+                document.getElementById('lang').value = settings.language;
+            }
         }
     });
 </script>

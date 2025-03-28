@@ -64,9 +64,14 @@ function shouldSaveHistory() {
     const settings = JSON.parse(localStorage.getItem(`userSettings_${username}`)) || {};
     return settings.saveHistory !== false;
 }
+
+function clearHistory() {
+    sessionStorage.removeItem('translationHistory');
+    loadHistory();
+}
+
 function saveToHistory(sourceText, translatedText, targetLang, visible) {
     if (!shouldSaveHistory()) {
-        clearHistory();
         return;
     }
     const history = JSON.parse(sessionStorage.getItem('translationHistory')) || [];
@@ -90,10 +95,6 @@ function loadHistory() {
         `).join('');
 }
 
-function clearHistory() {
-    sessionStorage.removeItem('translationHistory');
-    loadHistory();
-}
 
 document.getElementById('text').addEventListener('input', function (event) {
     const textarea = event.target;

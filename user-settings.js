@@ -30,58 +30,24 @@ function loadUserSettings() {
 
     const settings = JSON.parse(localStorage.getItem(`userSettings_${username}`)) || {};
 
+    if (!settings.language) {
+        settings.language = 'en';
+        localStorage.setItem(`userSettings_${username}`, JSON.stringify(settings));
+    }
+
     if (settings.email) document.getElementById('email').value = settings.email;
     if (settings.darkMode) document.getElementById('dark-mode').checked = settings.darkMode;
     if (settings.saveHistory) document.getElementById('save-history').checked = settings.saveHistory;
-    if (settings.language) document.getElementById('language').value = settings.language;
+    if (settings.language) {
+        document.getElementById('language').value = settings.language;
+        const targetSelect = document.getElementById('target');
+        if (targetSelect) {
+            targetSelect.value = settings.language;
+        }
+    }
 
     if (settings.darkMode) {
         document.body.classList.add('dark-mode');
-    }
-}
-
-async function updateUsername(newUsername) {
-    const usernameInput = document.getElementById('username');
-    const currentUsername = sessionStorage.getItem('username');
-
-    if (!newUsername || newUsername.trim().length < 3) {
-        showToast('Username must be at least 3 characters', 'error');
-        usernameInput.value = currentUsername;
-        enableEdit('username');
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/update-username', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`
-            },
-            body: JSON.stringify({ newUsername: newUsername.trim() })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-            throw new Error(data.error || 'Failed to update username');
-        }
-
-        sessionStorage.setItem('authToken', data.token);
-        sessionStorage.setItem('username', data.newUsername);
-
-        document.getElementById('username-display').textContent = data.newUsername;
-        document.getElementById('username').value = data.newUsername;
-
-        loadUserSettings();
-
-        showToast('Username updated successfully!', 'success');
-
-    } catch (error) {
-        console.error('Username update failed:', error);
-        usernameInput.value = currentUsername;
-        enableEdit('username');
-        showToast(error.message, 'error');
     }
 }
 
@@ -107,6 +73,12 @@ function enableEdit(fieldId) {
         btn.onclick = () => enableEdit(fieldId);
     }
 }
+
+function clearHistory() {
+    sessionStorage.removeItem('translationHistory');
+    loadHistory();
+}
+
 async function saveSetting(settingId) {
     const username = sessionStorage.getItem('username');
     if (!username) return;
@@ -135,11 +107,19 @@ async function saveSetting(settingId) {
             break;
         case 'save-history':
             settings.saveHistory = value;
+            if (!value) {
+                clearHistory();
+            }
             break;
         case 'language':
             settings.language = value;
+            const targetSelect = document.getElementById('target');
+            if (targetSelect) {
+                targetSelect.value = value;
+            }
             break;
     }
+
     localStorage.setItem(`userSettings_${username}`, JSON.stringify(settings));
     showToast('Settings saved successfully', 'success');
 }
