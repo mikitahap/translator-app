@@ -6,11 +6,13 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const db = require('./database');
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = process.env.SECRET_KEY || 'your-strong-secret-key-here';
+const SECRET_KEY = process.env.SECRET_KEY;
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
 app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
@@ -18,6 +20,49 @@ app.get('/', (req, res) => {
 });
 
 const API_URL = 'https://api-free.deepl.com/v2/translate';
+
+app.post('/api/update-username', authenticateToken, async (req, res) => {
+    const { newUsername } = req.body;
+    const currentUsername = req.user.username;
+
+    if (!newUsername || newUsername.length < 3) {
+        return res.status(400).json({ error: 'Name length should be less than 3 symbols' });
+    }
+
+    try {
+        const userExists = await new Promise((resolve, reject) => {
+            db.get("SELECT id FROM users WHERE username = ?", [newUsername], (err, row) => {
+                if (err) reject(err);
+                resolve(!!row);
+            });
+        });
+
+        if (userExists) {
+            return res.status(400).json({ error: 'This username already exists' });
+        }
+
+        await new Promise((resolve, reject) => {
+            db.run(
+                "UPDATE users SET username = ? WHERE username = ?",
+                [newUsername, currentUsername],
+                (err) => err ? reject(err) : resolve()
+            );
+        });
+
+        const token = jwt.sign({ username: newUsername }, SECRET_KEY, { expiresIn: '1h' });
+
+        res.json({
+            success: true,
+            newUsername,
+            token
+        });
+
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
 
 app.post('/register', (req, res) => {
     const { username, password } = req.body;
@@ -109,6 +154,59 @@ app.post('/translate', async (req, res) => {
         console.error('Error:', error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Translation error', details: error.response ? error.response.data : error.message });
     }
+});
+
+function authenticateToken(req, res, next) {
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
+
+app.get('/api/settings', authenticateToken, (req, res) => {
+    db.get("SELECT settings FROM users WHERE username = ?", [req.user.username], (err, row) => {
+        if (err || !row) {
+            return res.status(500).json({ error: 'Failed to load settings' });
+        }
+
+        try {
+            const settings = row.settings ? JSON.parse(row.settings) : {};
+            res.json(settings);
+        } catch (e) {
+            res.status(500).json({ error: 'Invalid settings format' });
+        }
+    });
+});
+
+app.post('/api/save-settings', authenticateToken, (req, res) => {
+    const { settings } = req.body;
+
+    if (!settings) {
+        return res.status(400).json({ error: 'Settings are required' });
+    }
+
+    db.run("UPDATE users SET settings = ? WHERE username = ?",
+        [JSON.stringify(settings), req.user.username],
+        (err) => {
+            if (err) {
+                return res.status(500).json({ error: 'Failed to save settings' });
+            }
+            res.json({ message: 'Settings saved successfully' });
+        }
+    );
+});
+
+app.delete('/api/delete-account', authenticateToken, (req, res) => {
+    db.run("DELETE FROM users WHERE username = ?", [req.user.username], (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to delete account' });
+        }
+        res.json({ message: 'Account deleted successfully' });
+    });
 });
 
 app.listen(3000, () => {

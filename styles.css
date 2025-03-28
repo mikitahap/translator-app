@@ -582,3 +582,85 @@ button:hover {
 #toast-icon {
     font-size: 18px;
 }
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .settings-card {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.dark-mode .settings-card h2 {
+    color: #ffffff;
+}
+
+body.dark-mode .setting-group label {
+    color: #bbbbbb;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+body.dark-mode .switch-slider {
+    background-color: #555;
+}
+
+body.dark-mode .top-bar {
+    background-color: #1a3a3a;
+}
+
+body.dark-mode .modal-content {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+}
+
+body.dark-mode .cancel-btn {
+    background-color: #555;
+    color: #e0e0e0;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .container {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark-mode .translated-text {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+body.dark-mode .top-bar {
+    background-color: #1a3a3a;
+}
+
+body.dark-mode button {
+    background-color: #3a5a78;
+    color: #e0e0e0;
+}
+
+body.dark-mode button:hover {
+    background-color: #4a6a88;
+}
+
+body.dark-mode .logout-btn {
+    background-color: #a04545;
+}
+
+body.dark-mode .logout-btn:hover {
+    background-color: #b05555;
+}

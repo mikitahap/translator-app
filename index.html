@@ -8,6 +8,17 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const username = sessionStorage.getItem('username');
+        if (username) {
+            const settings = JSON.parse(localStorage.getItem(`userSettings_${username}`)) || {};
+            if (settings.darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+        }
+    });
+</script>
 <div class="top-bar">
     <h1 class="top-bar-title" id = "index">Translator</h1>
     <div class="profile-section">

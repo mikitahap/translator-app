@@ -57,8 +57,18 @@ function debounce(func, delay) {
         timeoutId = setTimeout(() => func.apply(this, args), delay);
     };
 }
+function shouldSaveHistory() {
+    const username = sessionStorage.getItem('username');
+    if (!username) return false;
 
+    const settings = JSON.parse(localStorage.getItem(`userSettings_${username}`)) || {};
+    return settings.saveHistory !== false;
+}
 function saveToHistory(sourceText, translatedText, targetLang, visible) {
+    if (!shouldSaveHistory()) {
+        clearHistory();
+        return;
+    }
     const history = JSON.parse(sessionStorage.getItem('translationHistory')) || [];
     history.push({
         sourceText,

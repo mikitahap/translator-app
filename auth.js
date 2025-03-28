@@ -83,13 +83,16 @@ async function handleAuth(e) {
     }
 
     try {
-        const response = {
-            ok: true,
-            json: async () => ({
-                token: 'mock-token-' + Date.now(),
-                username: username
+        const response = await fetch(`/${currentAuthType}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username,
+                password
             })
-        };
+        });
 
         const data = await response.json();
 
@@ -98,13 +101,13 @@ async function handleAuth(e) {
         sessionStorage.setItem('authToken', data.token);
         sessionStorage.setItem('username', data.username);
 
+        location.reload();
         updateAuthUI();
         closeModal();
 
         if (currentAuthType === 'register') {
             showToast('Registration successful! You are now logged in.');
-        }
-        else{
+        } else {
             showToast('Authentication successful! You are now logged in.');
         }
     } catch (error) {
