@@ -35,7 +35,7 @@
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Installation guide
 
 1. **Clone the repo**:
     ```bash
