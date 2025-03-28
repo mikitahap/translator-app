@@ -11,6 +11,50 @@ function initializeUsernameField() {
         usernameInput.value = sessionStorage.getItem('username') || '';
     }
 }
+async function updateUsername(newUsername) {
+    const usernameInput = document.getElementById('username');
+    const currentUsername = sessionStorage.getItem('username');
+
+    if (!newUsername || newUsername.trim().length < 3) {
+        showToast('Username must be at least 3 characters', 'error');
+        usernameInput.value = currentUsername;
+        enableEdit('username');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/update-username', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify({ newUsername: newUsername.trim() })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.error || 'Failed to update username');
+        }
+
+        sessionStorage.setItem('authToken', data.token);
+        sessionStorage.setItem('username', data.newUsername);
+
+        document.getElementById('username-display').textContent = data.newUsername;
+        document.getElementById('username').value = data.newUsername;
+
+        loadUserSettings();
+
+        showToast('Username updated successfully!', 'success');
+
+    } catch (error) {
+        console.error('Username update failed:', error);
+        usernameInput.value = currentUsername;
+        enableEdit('username');
+        showToast(error.message, 'error');
+    }
+}
 
 
 function setupEventListeners() {
