@@ -59,7 +59,7 @@ function debounce(func, delay) {
 }
 function shouldSaveHistory() {
     const username = sessionStorage.getItem('username');
-    if (!username) return true``;
+    if (!username) return true;
 
     const settings = JSON.parse(localStorage.getItem(`userSettings_${username}`)) || {};
     return settings.saveHistory !== false;
