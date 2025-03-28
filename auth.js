@@ -101,6 +101,7 @@ async function handleAuth(e) {
         sessionStorage.setItem('authToken', data.token);
         sessionStorage.setItem('username', data.username);
 
+        await loadUserSettings();
         location.reload();
         updateAuthUI();
         closeModal();
@@ -112,6 +113,24 @@ async function handleAuth(e) {
         }
     } catch (error) {
         showError(error.message || 'Authentication failed');
+    }
+}
+
+async function loadUserSettings() {
+    try {
+        const response = await fetch('/api/settings', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`
+            }
+        });
+
+        if (response.ok) {
+            const settings = await response.json();
+            localStorage.setItem(`userSettings_${sessionStorage.getItem('username')}`, JSON.stringify(settings));
+        }
+    } catch (error) {
+        console.error('Error loading user settings:', error);
     }
 }
 

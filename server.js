@@ -82,6 +82,12 @@ app.post('/register', (req, res) => {
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
+        const defaultSettings = {
+            language: 'EN',
+            darkMode: false,
+            saveHistory: true
+        };
+
         db.run("INSERT INTO users (username, password) VALUES (?, ?)",
             [username, hashedPassword],
             function(err) {
