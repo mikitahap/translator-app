@@ -8,7 +8,7 @@
 - **DeepL API**: Translates 30+ languages.
 - **User Authentication**: Registration, JWT-based security, profile management.
 - **Customization**: Dark/light mode, default language, translation history.
-- **Translation History**: Saved temporarily with sessionStorage, with optional permanent storage.
+- **Translation History**: Saved temporarily with sessionStorage.
 
 ## 🛠 Tech Stack
 
