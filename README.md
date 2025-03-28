@@ -1,6 +1,6 @@
 # 🌍 Translator App with DeepL API and SQLite
 
-![App Screenshot]([https://imgur.com/a/tYzYqIY](https://i.imgur.com/3j87yNm.png))
+![App Screenshot](https://i.imgur.com/3j87yNm.png)
 
 ## ✨ Features
 
@@ -77,3 +77,6 @@ POST /translate
     "text": "Hello world",
     "target": "ES"
 }
+```
+## 📜 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
