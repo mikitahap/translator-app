@@ -47,17 +47,22 @@
     ```bash
     npm install
     ```
-3. **Configure environment**:
+3. **Install bcrypt**
     ```bash
-    echo "API_KEY=your_deepl_key SECRET_KEY=your_strong_jwt_secret_here" > .env
+    npm install bcrypt
+    ```
+4. **Configure environment**:
+    ```bash
+    echo "API_KEY=your_deepl_key" > .env
+    echo "SECRET_KEY=your_strong_jwt_secret_here" >> .env
     ```
 
-4. **Run the server**:
+5. **Run the server**:
     ```bash
     node server.js
     ```
 
-5. **Open `http://localhost:3000/`** in your browser.
+6. **Open `http://localhost:3000/`** in your browser.
 
 ---
 
