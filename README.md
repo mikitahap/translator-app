@@ -40,7 +40,7 @@
 1. **Clone the repo**:
     ```bash
     git clone https://github.com/mikitahap/translator-app.git
-    cd translator-app/server
+    cd translator-app/
     ```
 
 2. **Install dependencies**:
