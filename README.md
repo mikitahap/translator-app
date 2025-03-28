@@ -1,6 +1,6 @@
 # 🌍 Translator App with DeepL API and SQLite
 
-![App Screenshot](https://imgur.com/a/tYzYqIY)
+![App Screenshot]([https://imgur.com/a/tYzYqIY](https://i.imgur.com/3j87yNm.png))
 
 ## ✨ Features
 
